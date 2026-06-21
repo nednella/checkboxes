@@ -2,23 +2,21 @@
     <h1>checkboxes</h1>
 </div>
 
-A smaller, learning-focused clone of [One Million Checkboxes](https://onemillioncheckboxes.com) — a grid of shared checkboxes that anyone can toggle, live, together.
+This is a learning project focussed on web sockets; inspiration for the use case is drawn from the popular [One Million Checkboxes](https://eieio.games/blog/one-million-checkboxes/) project.
 
 ## Prerequisites
 
-- **Node** — version pinned in [`.nvmrc`](./.nvmrc); a version manager like [nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm) will pick it up automatically
-- **pnpm** — see [installation](https://pnpm.io/installation)
+- **Node** — version pinned in [`.nvmrc`](./.nvmrc)
+- **pnpm** — see [installation guide](https://pnpm.io/installation)
 
 ## Getting started
 
 ```bash
-git clone https://github.com/nednella/checkboxes.git
-cd checkboxes
+git clone https://github.com/nednella/checkboxes.git && cd checkboxes
 ```
 
 ```bash
-pnpm i       # install all workspaces
-pnpm dev     # run web + server together
+pnpm i && pnpm dev         # install + run all workspaces
 ```
 
 By default, the web client and server will be available on port `5173` and `3000`, respectively.
