@@ -257,6 +257,10 @@ importers:
         version: 8.61.1(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3)
 
   apps/server:
+    dependencies:
+      '@checkboxes/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
     devDependencies:
       '@types/node':
         specifier: 24.13.2
@@ -270,6 +274,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@checkboxes/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@tailwindcss/vite':
         specifier: ^4.3.1
         version: 4.3.1(vite@8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.4)(yaml@2.9.0))
@@ -316,6 +323,8 @@ importers:
       vite:
         specifier: ^8.0.12
         version: 8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.4)(yaml@2.9.0)
+
+  packages/shared: {}
 
 packages:
 
