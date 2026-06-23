@@ -1,44 +1,28 @@
-import { useEffect, useRef, useState } from "react";
+import Page from "./components/page";
+import { useSocket } from "./hooks/useSocket";
 
 function App() {
-  const [count, setCount] = useState<number>(-1);
-  const wsRef = useRef<WebSocket | null>(null);
-
-  useEffect(() => {
-    const ws = new WebSocket("ws://localhost:3000/socket");
-    wsRef.current = ws;
-
-    ws.onmessage = (evt: MessageEvent<string>) => {
-      const msg = JSON.parse(evt.data);
-      if (msg.type === "count") setCount(msg.count);
-      else console.log(msg);
-    };
-
-    return () => ws.close();
-  }, []);
-
-  const handleUp = () => wsRef.current?.send("increment");
-  const handleDown = () => wsRef.current?.send("decrement");
+  const { count, increment, decrement } = useSocket();
 
   return (
-    <div className="flex min-h-svh w-full flex-col items-center justify-center gap-6">
-      <h1>checkboxes</h1>
+    <Page>
+      <h1 className="text-2xl font-normal">checkboxes</h1>
       <p>{count}</p>
-      <div className="flex gap-6">
+      <div className="space-x-6">
         <button
-          onClick={handleUp}
+          onClick={() => increment()}
           className="border px-6 py-2"
         >
           up
         </button>
         <button
-          onClick={handleDown}
+          onClick={() => decrement()}
           className="border px-6 py-2"
         >
           down
         </button>
       </div>
-    </div>
+    </Page>
   );
 }
 
