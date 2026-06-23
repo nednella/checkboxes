@@ -1,28 +1,16 @@
+import Checkboxes from "./components/checkboxes";
+import Header from "./components/header";
 import Page from "./components/page";
-import { useSocket } from "./hooks/useSocket";
+import { SocketProvider } from "./providers/socket-provider";
 
 function App() {
-  const { count, increment, decrement } = useSocket();
-
   return (
-    <Page>
-      <h1 className="text-2xl font-normal">checkboxes</h1>
-      <p>{count}</p>
-      <div className="space-x-6">
-        <button
-          onClick={() => increment()}
-          className="border px-6 py-2"
-        >
-          up
-        </button>
-        <button
-          onClick={() => decrement()}
-          className="border px-6 py-2"
-        >
-          down
-        </button>
-      </div>
-    </Page>
+    <SocketProvider>
+      <Page>
+        <Header />
+        <Checkboxes />
+      </Page>
+    </SocketProvider>
   );
 }
 

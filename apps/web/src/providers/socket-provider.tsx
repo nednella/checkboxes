@@ -1,43 +1,35 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type SocketContext = {
-  count: number;
-  increment: () => void;
-  decrement: () => void;
+  snapshot: boolean[];
+  flip: (index: number) => void;
 };
 
 const SocketContext = React.createContext<SocketContext | null>(null);
 
-type SocketProviderProps = {
-  children: React.ReactNode;
-};
-
-function SocketProvider({ children }: SocketProviderProps) {
+function SocketProvider({ children }: { children: React.ReactNode }) {
   const ws = useRef<WebSocket | null>(null);
-  const [count, setCount] = useState<number>(-1);
+  const [snapshot, setSnapshot] = useState<boolean[]>(new Array(0));
 
   useEffect(() => {
     ws.current = new WebSocket("ws://localhost:3000/socket");
-
     ws.current.onmessage = (evt: MessageEvent<string>) => {
       const msg = JSON.parse(evt.data);
-      if (msg.type === "count") setCount(msg.count);
+      if (msg.type === "snapshot") setSnapshot(msg.snapshot);
       else console.log(msg);
     };
 
     return () => ws.current?.close();
   }, []);
 
-  const increment = useCallback(() => ws.current?.send("increment"), [ws]);
-  const decrement = useCallback(() => ws.current?.send("decrement"), [ws]);
+  const flip = useCallback((index: number) => ws.current?.send(JSON.stringify({ type: "flip", index })), [ws]);
 
   const value = useMemo(
     () => ({
-      count,
-      increment,
-      decrement
+      snapshot,
+      flip
     }),
-    [count, increment, decrement]
+    [snapshot, flip]
   );
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;

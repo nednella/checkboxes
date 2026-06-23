@@ -5,5 +5,7 @@ type Props = {
 };
 
 export default function Page({ children }: Props) {
-  return <div className="flex h-svh w-full flex-col items-center justify-center gap-6">{children}</div>;
+  return (
+    <div className="grid h-svh w-full grid-rows-[max-content_1fr] gap-4 overflow-y-auto px-8 py-4">{children}</div>
+  );
 }

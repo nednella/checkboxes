@@ -2,9 +2,9 @@ import type { Server } from "node:http";
 
 import { WebSocket, WebSocketServer } from "ws";
 
-import { dateNow } from "@checkboxes/shared";
+import { ARRAY_SIZE, dateNow } from "@checkboxes/shared";
 
-let globalCount = 0;
+const checkboxes: boolean[] = new Array(ARRAY_SIZE).fill(false);
 
 function createWebSocketServer(server: Server) {
   const wss = new WebSocketServer({ server, path: "/socket" });
@@ -12,7 +12,7 @@ function createWebSocketServer(server: Server) {
   wss.on("connection", (ws) => {
     console.log("Socket connected: %s", dateNow());
     ws.send(JSON.stringify({ type: "message", message: "Welcome! You have connected to the WSS" }));
-    ws.send(JSON.stringify({ type: "count", count: globalCount }));
+    ws.send(JSON.stringify({ type: "snapshot", snapshot: checkboxes }));
 
     ws.on("error", console.error);
 
@@ -24,14 +24,14 @@ function createWebSocketServer(server: Server) {
     });
 
     ws.on("message", (data: WebSocket.RawData) => {
-      const message = data.toString();
+      const message = JSON.parse(data.toString());
       console.log("received: %s", message);
 
-      if (message === "increment" || message === "decrement") {
-        globalCount += message === "increment" ? 1 : -1;
+      if (message.type === "flip") {
+        checkboxes[message.index] = !checkboxes[message.index];
 
         wss.clients.forEach((client) => {
-          client.send(JSON.stringify({ type: "count", count: globalCount }));
+          client.send(JSON.stringify({ type: "snapshot", snapshot: checkboxes }));
         });
       }
     });
