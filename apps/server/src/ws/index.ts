@@ -2,7 +2,7 @@ import type { Server } from "node:http";
 
 import { WebSocket, WebSocketServer } from "ws";
 
-import { ARRAY_SIZE, dateNow } from "@checkboxes/shared";
+import { ARRAY_SIZE } from "@checkboxes/shared";
 
 const checkboxes: boolean[] = new Array(ARRAY_SIZE).fill(false);
 
@@ -10,7 +10,7 @@ function createWebSocketServer(server: Server) {
   const wss = new WebSocketServer({ server, path: "/socket" });
 
   wss.on("connection", (ws) => {
-    console.log("Socket connected: %s", dateNow());
+    console.log("Socket connected: %s", new Date());
     ws.send(JSON.stringify({ type: "message", message: "Welcome! You have connected to the WSS" }));
     ws.send(JSON.stringify({ type: "snapshot", snapshot: checkboxes }));
 
@@ -20,7 +20,7 @@ function createWebSocketServer(server: Server) {
 
     ws.on("close", (code, reason) => {
       clearInterval(pingInterval);
-      console.log("Socket disconnected [%s, %s]: %s", code, reason.toString(), dateNow());
+      console.log("Socket disconnected [%s, %s]: %s", code, reason.toString(), new Date());
     });
 
     ws.on("message", (data: WebSocket.RawData) => {
@@ -36,8 +36,8 @@ function createWebSocketServer(server: Server) {
       }
     });
 
-    ws.on("ping", () => console.log("Received ping: %s", dateNow()));
-    ws.on("pong", () => console.log("Received pong: %s", dateNow()));
+    ws.on("ping", () => console.log("Received ping: %s", new Date()));
+    ws.on("pong", () => console.log("Received pong: %s", new Date()));
   });
 
   return wss;
