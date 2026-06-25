@@ -2,7 +2,7 @@ import type { Server } from "node:http";
 
 import { WebSocket, WebSocketServer } from "ws";
 
-import { ARRAY_SIZE } from "@checkboxes/shared";
+import { ARRAY_SIZE, SOCKET_PATH } from "@checkboxes/shared";
 
 import { registerConnectionHeartbeat, registerServerHeartbeat } from "./heartbeat.js";
 import type { CheckboxesWebSocket } from "./types.js";
@@ -10,7 +10,7 @@ import type { CheckboxesWebSocket } from "./types.js";
 const checkboxes: boolean[] = new Array(ARRAY_SIZE).fill(false);
 
 export default function attachWebSocketServer(server: Server) {
-  const wss = new WebSocketServer({ server, path: "/socket" });
+  const wss = new WebSocketServer({ server, path: SOCKET_PATH });
   registerServerHeartbeat(wss);
 
   wss.on("connection", (ws: CheckboxesWebSocket) => {

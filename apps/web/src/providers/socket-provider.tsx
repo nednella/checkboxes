@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { SOCKET_PATH } from "@checkboxes/shared";
+
 import { SocketConnection } from "../lib/socket/connection";
+
+const HOST = import.meta.env.VITE_SERVER_HOST || "localhost";
+const PORT = import.meta.env.VITE_SERVER_PORT || "3000";
+const WS_URL = `ws://${HOST}:${PORT}${SOCKET_PATH}`;
 
 type SocketContext = {
   snapshot: boolean[];
@@ -15,7 +21,7 @@ function SocketProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const ws = new SocketConnection({
-      url: "ws://localhost:3000/socket",
+      url: WS_URL,
       handlers: {
         onMessage: (evt) => {
           const msg = JSON.parse(evt.data);
