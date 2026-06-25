@@ -1,3 +1,5 @@
+import { exponentialBackoff } from "../backoff";
+
 type SocketConnectionHandlers = {
   onOpen?: () => void;
   onMessage?: (event: MessageEvent) => void;
@@ -110,8 +112,9 @@ export class SocketConnection {
       return this.handlers.onReconnectFailed?.();
     }
 
+    const delay = exponentialBackoff(this.retries, this.reconnectDelayMs);
+    this.reconnectTimer = setTimeout(() => this.setup(), delay);
     this.retries++;
-    this.reconnectTimer = setTimeout(() => this.setup(), this.reconnectDelayMs);
   }
 
   /**
