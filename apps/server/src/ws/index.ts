@@ -9,7 +9,7 @@ import type { CheckboxesWebSocket } from "./types.js";
 
 const checkboxes: boolean[] = new Array(ARRAY_SIZE).fill(false);
 
-function createWebSocketServer(server: Server) {
+export default function attachWebSocketServer(server: Server) {
   const wss = new WebSocketServer({ server, path: "/socket" });
   registerServerHeartbeat(wss);
 
@@ -41,5 +41,3 @@ function createWebSocketServer(server: Server) {
 
   return wss;
 }
-
-export default createWebSocketServer;
