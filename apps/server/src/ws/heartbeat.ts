@@ -27,7 +27,7 @@ export function registerServerHeartbeat(wss: WebSocketServer) {
       }
 
       ws.missedPongs++;
-      ws.ping();
+      ws.send(JSON.stringify({ type: "heartbeat" }));
     });
   }, SERVER_HEARTBEAT_INTERVAL_MS);
 
@@ -43,8 +43,12 @@ export function registerConnectionHeartbeat(ws: CheckboxesWebSocket) {
   console.log("[SOCKET] connected (%s)", new Date());
   ws.missedPongs = 0;
 
-  ws.on("pong", () => {
-    console.log("[SOCKET] ping received (%s)", new Date());
-    ws.missedPongs = 0;
+  ws.on("message", (data) => {
+    const msg = JSON.parse(data.toString());
+
+    if (msg.type === "heartbeat") {
+      console.log("[SOCKET] ping received (%s)", new Date());
+      ws.missedPongs = 0;
+    }
   });
 }

@@ -25,8 +25,16 @@ function SocketProvider({ children }: { children: React.ReactNode }) {
       handlers: {
         onMessage: (evt) => {
           const msg = JSON.parse(evt.data);
-          if (msg.type === "snapshot") setSnapshot(msg.snapshot);
-          else console.log(msg);
+          switch (msg.type) {
+            case "heartbeat":
+              ws.send({ type: "heartbeat" });
+              break;
+            case "snapshot":
+              setSnapshot(msg.snapshot);
+              break;
+            default:
+              console.log(msg);
+          }
         }
       }
     });
