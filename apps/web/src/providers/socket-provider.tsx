@@ -23,6 +23,7 @@ function SocketProvider({ children }: { children: React.ReactNode }) {
     const ws = new SocketConnection({
       url: WS_URL,
       handlers: {
+        onOpen: () => console.log("[socket] connected"),
         onMessage: (evt) => {
           const msg = JSON.parse(evt.data);
           switch (msg.type) {
@@ -35,7 +36,10 @@ function SocketProvider({ children }: { children: React.ReactNode }) {
             default:
               console.log(msg);
           }
-        }
+        },
+        onError: (evt) => console.error("[socket] error", evt),
+        onClose: (evt) => console.log(`[socket] disconnected (${evt.code})`),
+        onReconnectFailed: () => console.warn("[socket] reconnect failed — giving up")
       }
     });
 
