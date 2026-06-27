@@ -1,7 +1,7 @@
 <div align="center">
   <h3><b>checkboxes</b></h3>
   <p>
-    This is a learning project focussed on web sockets; inspiration for the use case is drawn from the popular <a href="https://eieio.games/blog/one-million-checkboxes/">One Million Checkboxes</a> project.
+    Learning project focussed on web sockets; inspiration drawn from the viral <a href="https://eieio.games/blog/one-million-checkboxes/">One Million Checkboxes</a>.
   </p>
   <p>
     <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
