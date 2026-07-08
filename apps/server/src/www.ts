@@ -1,6 +1,6 @@
 import http from "node:http";
 
-import { SOCKET_PATH } from "@checkboxes/shared";
+import { SOCKET_PATH } from "@checkboxes/shared/constants";
 
 import app from "./app/index.js";
 import config from "./config.js";

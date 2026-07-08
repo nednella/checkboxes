@@ -2,7 +2,7 @@ import type { Server } from "node:http";
 
 import { WebSocket, WebSocketServer } from "ws";
 
-import { ARRAY_SIZE, SOCKET_PATH } from "@checkboxes/shared";
+import { ARRAY_SIZE, SOCKET_PATH } from "@checkboxes/shared/constants";
 
 import { registerConnectionHeartbeat, registerServerHeartbeat } from "./heartbeat.js";
 import type { CheckboxesWebSocket } from "./types.js";

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { SOCKET_PATH } from "@checkboxes/shared";
+import { SOCKET_PATH } from "@checkboxes/shared/constants";
 
 import { SocketConnection } from "../lib/socket/connection";
 

@@ -1,4 +1,4 @@
-import { ARRAY_SIZE } from "@checkboxes/shared";
+import { ARRAY_SIZE } from "@checkboxes/shared/constants";
 
 import { useSocket } from "../hooks/use-socket";
 
