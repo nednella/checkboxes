@@ -1,6 +1,6 @@
-import type { WebSocket, WebSocketServer } from "ws";
+import type { WebSocketServer } from "ws";
 
-import { clientCodec, serverCodec } from "@checkboxes/shared/protocol";
+import { serverCodec } from "@checkboxes/shared/protocol";
 
 import type { CheckboxesWebSocket } from "./types.js";
 
@@ -37,26 +37,10 @@ export function registerServerHeartbeat(wss: WebSocketServer) {
 }
 
 /**
- * Register a connection's `missedPongs` counter and resets every time it answers a ping.
+ * Invoke any time a message is received from a connection to keep that socket alive.
  *
- * @param ws WebSocket to register a heartbeat to
+ * @param ws CheckboxesWebSocket connection to mark as alive
  */
-export function registerConnectionHeartbeat(ws: CheckboxesWebSocket) {
-  console.log("[SERVER] connected (%s)", new Date());
+export function markAlive(ws: CheckboxesWebSocket) {
   ws.missedPongs = 0;
-
-  ws.on("message", (raw: WebSocket.RawData) => {
-    const result = clientCodec.decode(raw.toString());
-    if (!result.ok) {
-      console.log("[SERVER] decode error: ", result.reason, raw.toString());
-      return;
-    }
-
-    const message = result.data;
-
-    if (message.type === "heartbeat") {
-      console.log("[SERVER] ping received (%s)", new Date());
-      ws.missedPongs = 0;
-    }
-  });
 }
