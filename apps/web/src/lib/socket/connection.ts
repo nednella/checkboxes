@@ -1,9 +1,21 @@
-import { exponentialBackoff } from "../backoff";
+import { clientCodec, serverCodec, type ClientMessage, type ServerMessage } from "@checkboxes/shared/protocol";
+
+import { exponentialBackoff } from "./backoff";
+
+type SocketError =
+  | {
+      type: "socket";
+      event: Event;
+    }
+  | {
+      type: "protocol";
+      reason: "invalid-json" | "invalid-message";
+    };
 
 type SocketConnectionHandlers = {
   onOpen?: () => void;
-  onMessage?: (event: MessageEvent) => void;
-  onError?: (event: Event) => void;
+  onMessage?: (message: ServerMessage) => void;
+  onError?: (error: SocketError) => void;
   onClose?: (event: CloseEvent) => void;
   onReconnectFailed?: () => void;
 };
@@ -47,9 +59,9 @@ export class SocketConnection {
     this.teardown();
   }
 
-  send(data: unknown): void {
+  send(data: ClientMessage): void {
     if (this.ws?.readyState === WebSocket.CONNECTING) return;
-    this.ws?.send(JSON.stringify(data));
+    this.ws?.send(clientCodec.encode(data));
   }
 
   status(): SocketStatus {
@@ -75,10 +87,16 @@ export class SocketConnection {
 
     ws.onmessage = (event: MessageEvent) => {
       this.startConnectionWatcher();
-      this.handlers.onMessage?.(event);
+
+      const result = serverCodec.decode(event.data);
+      if (!result.ok) {
+        return this.handlers.onError?.({ type: "protocol", reason: result.reason });
+      }
+
+      this.handlers.onMessage?.(result.data);
     };
 
-    ws.onerror = (event) => this.handlers.onError?.(event);
+    ws.onerror = (event) => this.handlers.onError?.({ type: "socket", event });
 
     ws.onclose = (event: CloseEvent) => {
       this.handlers.onClose?.(event);

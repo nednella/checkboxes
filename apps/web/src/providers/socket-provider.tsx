@@ -24,17 +24,16 @@ function SocketProvider({ children }: { children: React.ReactNode }) {
       url: WS_URL,
       handlers: {
         onOpen: () => console.log("[socket] connected"),
-        onMessage: (evt) => {
-          const msg = JSON.parse(evt.data);
-          switch (msg.type) {
+        onMessage: (message) => {
+          switch (message.type) {
             case "heartbeat":
               ws.send({ type: "heartbeat" });
               break;
             case "snapshot":
-              setSnapshot(msg.snapshot);
+              setSnapshot(message.payload);
               break;
             default:
-              console.log(msg);
+              console.log(message);
           }
         },
         onError: (evt) => console.error("[socket] error", evt),
@@ -49,7 +48,7 @@ function SocketProvider({ children }: { children: React.ReactNode }) {
     return () => ws.disconnect();
   }, []);
 
-  const flip = useCallback((index: number) => wsRef.current?.send({ type: "flip", index }), [wsRef]);
+  const flip = useCallback((index: number) => wsRef.current?.send({ type: "flip", payload: index }), [wsRef]);
 
   const value = useMemo(
     () => ({
