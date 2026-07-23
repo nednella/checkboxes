@@ -3,6 +3,7 @@ import type { Server } from "node:http";
 import { WebSocket, WebSocketServer } from "ws";
 
 import { ARRAY_SIZE, SOCKET_PATH } from "@checkboxes/shared/constants";
+import { clientCodec, serverCodec, type ClientMessage } from "@checkboxes/shared/protocol";
 
 import { registerConnectionHeartbeat, registerServerHeartbeat } from "./heartbeat.js";
 import type { CheckboxesWebSocket } from "./types.js";
@@ -16,26 +17,31 @@ export default function attachWebSocketServer(server: Server) {
   wss.on("connection", (ws: CheckboxesWebSocket) => {
     registerConnectionHeartbeat(ws);
 
-    ws.send(JSON.stringify({ type: "message", message: "Welcome! You have connected to the WSS" }));
-    ws.send(JSON.stringify({ type: "snapshot", snapshot: checkboxes }));
+    ws.send(serverCodec.encode({ type: "message", payload: "Welcome! You have connected to the checkboxes WSS" }));
+    ws.send(serverCodec.encode({ type: "snapshot", payload: checkboxes }));
 
     ws.on("error", console.error);
 
-    ws.on("message", (data: WebSocket.RawData) => {
-      const message = JSON.parse(data.toString());
-      console.log("[SERVER] received: %s", message);
+    ws.on("message", (raw: WebSocket.RawData) => {
+      const result = clientCodec.decode(raw.toString());
+      if (!result.ok) {
+        console.log("[SERVER] decode error: ", result.reason, raw.toString());
+        return;
+      }
+
+      const message: ClientMessage = result.data;
 
       if (message.type === "flip") {
-        checkboxes[message.index] = !checkboxes[message.index];
+        checkboxes[message.payload] = !checkboxes[message.payload];
 
         wss.clients.forEach((client) => {
-          client.send(JSON.stringify({ type: "snapshot", snapshot: checkboxes }));
+          client.send(serverCodec.encode({ type: "snapshot", payload: checkboxes }));
         });
       }
     });
 
     ws.on("close", (code, reason) => {
-      console.log("[SOCKET] disconnected [%s, %s] (%s)", code, reason.toString(), new Date());
+      console.log("[SERVER] disconnected [%s, %s] (%s)", code, reason.toString(), new Date());
     });
   });
 

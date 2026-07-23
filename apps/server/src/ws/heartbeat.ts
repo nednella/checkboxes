@@ -1,4 +1,6 @@
-import type { WebSocketServer } from "ws";
+import type { WebSocket, WebSocketServer } from "ws";
+
+import { clientCodec, serverCodec } from "@checkboxes/shared/protocol";
 
 import type { CheckboxesWebSocket } from "./types.js";
 
@@ -22,12 +24,12 @@ export function registerServerHeartbeat(wss: WebSocketServer) {
       }
 
       if (ws.missedPongs >= SOCKET_MAX_MISSED_PONGS) {
-        console.log("[SERVER] terminating connection (%s)", new Date());
+        console.log("[SERVER] pruning dead connection (%s)", new Date());
         return ws.terminate();
       }
 
       ws.missedPongs++;
-      ws.send(JSON.stringify({ type: "heartbeat" }));
+      ws.send(serverCodec.encode({ type: "heartbeat" }));
     });
   }, SERVER_HEARTBEAT_INTERVAL_MS);
 
@@ -40,14 +42,20 @@ export function registerServerHeartbeat(wss: WebSocketServer) {
  * @param ws WebSocket to register a heartbeat to
  */
 export function registerConnectionHeartbeat(ws: CheckboxesWebSocket) {
-  console.log("[SOCKET] connected (%s)", new Date());
+  console.log("[SERVER] connected (%s)", new Date());
   ws.missedPongs = 0;
 
-  ws.on("message", (data) => {
-    const msg = JSON.parse(data.toString());
+  ws.on("message", (raw: WebSocket.RawData) => {
+    const result = clientCodec.decode(raw.toString());
+    if (!result.ok) {
+      console.log("[SERVER] decode error: ", result.reason, raw.toString());
+      return;
+    }
 
-    if (msg.type === "heartbeat") {
-      console.log("[SOCKET] ping received (%s)", new Date());
+    const message = result.data;
+
+    if (message.type === "heartbeat") {
+      console.log("[SERVER] ping received (%s)", new Date());
       ws.missedPongs = 0;
     }
   });
