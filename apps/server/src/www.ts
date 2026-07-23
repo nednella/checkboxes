@@ -2,9 +2,9 @@ import http from "node:http";
 
 import { SOCKET_PATH } from "@checkboxes/shared/constants";
 
-import app from "./app/index.js";
+import app from "./app/server.js";
 import config from "./config.js";
-import attachWebSocketServer from "./ws/index.js";
+import attachWebSocketServer from "./ws/server.js";
 
 const { host, port } = config;
 
