@@ -1,34 +1,7 @@
-import { clientCodec, serverCodec, type ClientMessage, type ServerMessage } from "@checkboxes/shared/protocol";
+import { clientCodec, serverCodec, type ClientMessage } from "@checkboxes/shared/protocol";
 
 import { exponentialBackoff } from "./backoff";
-
-type SocketError =
-  | {
-      type: "socket";
-      event: Event;
-    }
-  | {
-      type: "protocol";
-      reason: "invalid-json" | "invalid-message";
-    };
-
-type SocketConnectionHandlers = {
-  onOpen?: () => void;
-  onMessage?: (message: ServerMessage) => void;
-  onError?: (error: SocketError) => void;
-  onClose?: (event: CloseEvent) => void;
-  onReconnectFailed?: () => void;
-};
-
-type SocketConnectionOptions = {
-  url: string;
-  maxRetries?: number;
-  connectionTimeoutMs?: number;
-  reconnectDelayMs?: number;
-  handlers: SocketConnectionHandlers;
-};
-
-type SocketStatus = "connecting" | "reconnecting" | "open" | "closed";
+import type { SocketConnectionHandlers, SocketConnectionOptions, SocketStatus } from "./types";
 
 const DEFAULT_MAX_RETRIES = 3;
 const DEFAULT_CONNECTION_TIMEOUT_MS = 30_000;
