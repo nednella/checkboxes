@@ -30,6 +30,10 @@ type SocketConnectionOptions = {
 
 type SocketStatus = "connecting" | "reconnecting" | "open" | "closed";
 
+const DEFAULT_MAX_RETRIES = 3;
+const DEFAULT_CONNECTION_TIMEOUT_MS = 30_000;
+const DEFAULT_RECONNECT_DELAY_MS = 3_000;
+
 export class SocketConnection {
   private readonly url: string;
   private readonly maxRetries: number;
@@ -45,9 +49,9 @@ export class SocketConnection {
 
   constructor(options: SocketConnectionOptions) {
     this.url = options.url;
-    this.maxRetries = options.maxRetries ?? 3;
-    this.connectionTimeoutMs = options.connectionTimeoutMs ?? 30_000;
-    this.reconnectDelayMs = options.reconnectDelayMs ?? 3_000;
+    this.maxRetries = options.maxRetries ?? DEFAULT_MAX_RETRIES;
+    this.connectionTimeoutMs = options.connectionTimeoutMs ?? DEFAULT_CONNECTION_TIMEOUT_MS;
+    this.reconnectDelayMs = options.reconnectDelayMs ?? DEFAULT_RECONNECT_DELAY_MS;
     this.handlers = options.handlers;
   }
 
