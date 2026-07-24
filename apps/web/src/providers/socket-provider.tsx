@@ -23,7 +23,7 @@ function SocketProvider({ children }: { children: React.ReactNode }) {
     const ws = new SocketConnection({
       url: WS_URL,
       handlers: {
-        onOpen: () => console.log("[socket] connected"),
+        onOpen: () => console.log("[SOCKET] connected (%s)", new Date().toISOString()),
         onMessage: (message) => {
           switch (message.type) {
             case "heartbeat":
@@ -36,9 +36,9 @@ function SocketProvider({ children }: { children: React.ReactNode }) {
               console.log(message);
           }
         },
-        onError: (evt) => console.error("[socket] error", evt),
-        onClose: (evt) => console.log(`[socket] disconnected (${evt.code})`),
-        onReconnectFailed: () => console.warn("[socket] reconnect failed — giving up")
+        onError: (event) => console.error("[SOCKET] error!", event),
+        onClose: (event) => console.log("[SOCKET] disconnected [%s] (%s)", event.code, new Date().toISOString()),
+        onReconnectFailed: () => console.warn("[SOCKET] reconnect failed — giving up (%s)", new Date().toISOString())
       }
     });
 
