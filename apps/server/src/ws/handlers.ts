@@ -1,6 +1,6 @@
 import type { WebSocket, WebSocketServer } from "ws";
 
-import { clientCodec, serverCodec, type ClientMessage } from "@checkboxes/shared/protocol";
+import { clientCodec, serverCodec, type ClientMessage } from "@checkboxes/protocol";
 
 import { markAlive } from "./heartbeat.js";
 import { checkboxes } from "./state.js";

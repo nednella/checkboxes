@@ -1,4 +1,4 @@
-import type { ServerMessage } from "@checkboxes/shared/protocol";
+import type { ServerMessage } from "@checkboxes/protocol";
 
 export type SocketError =
   | {

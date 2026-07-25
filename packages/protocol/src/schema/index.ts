@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { MessageCodec } from "./codec.js";
+import { MessageCodec } from "../codec/index.js";
 
 export const clientMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("heartbeat") }),

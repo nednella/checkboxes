@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "type": "module",
   "exports": {
-    "./constants": "./src/constants/index.ts",
-    "./protocol": "./src/protocol/index.ts"
-  },
-  "dependencies": {
-    "zod": "^4.4.3"
+    "./constants": "./src/constants/index.ts"
   }
 }

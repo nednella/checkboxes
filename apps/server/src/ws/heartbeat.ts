@@ -1,6 +1,6 @@
 import type { WebSocketServer } from "ws";
 
-import { serverCodec } from "@checkboxes/shared/protocol";
+import { serverCodec } from "@checkboxes/protocol";
 
 import type { CheckboxesWebSocket } from "./types.js";
 

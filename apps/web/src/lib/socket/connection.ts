@@ -1,4 +1,4 @@
-import { clientCodec, serverCodec, type ClientMessage } from "@checkboxes/shared/protocol";
+import { clientCodec, serverCodec, type ClientMessage } from "@checkboxes/protocol";
 
 import { exponentialBackoff } from "./backoff";
 import type { SocketConnectionHandlers, SocketConnectionOptions, SocketStatus } from "./types";
